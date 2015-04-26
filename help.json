@@ -1,0 +1,17 @@
+{
+    "testwebsite" : "Enter a URL to an internet web site.  This is the site that Portal Auth will attempt to reach to determine if a captive portal is blocking your connection.",
+	"expecteddata" : "This is the data you expect Portal Auth to receive when accessing Test Website.  It is recommended that you leave these settings at their default as they have been tested.  If you change them make sure you know exactly what data is coming from the Test Website otherwise you will receive a false positive.",
+	"tags" : "These are HTML tags that you want Portal Auth to search for when attempting to authenticate with an AP.  In a web page these tags typically hold data that the portal is looking for and are referenced by name when creating the $_POST request that gets sent to the authorization target.  Enter a list of elements delimited by a semicolon.  Please enter only tag names and not what the element would actually look like in HTML.",
+	"injectjs" : "This is the JavaScript code that will be injected into the cloned portal.",
+	"injecthtml" : "This is the HTML form code that will be injected into the cloned portal.  Do not include form tags in this code as it will be injected into an already existing form on the cloned page.",
+	"injectcss" : "This is the style code that will be applied to the HTML elements.  It is important to have a nice looking login form otherwise the victim may get suspicious.",
+	"auth.php" : "This is the script that logs the credentials of a victim.  It is located at /www/nodogsplash/",
+	"p_archive" : "This is the location where you store your portals.  If you want to be able to see your portal in Evil Portal II then you must use either /sd/portals/ or /root/portals/<br /><br />*ALWAYS* end this directory with a forward slash (/). If you don't, the cloner will not be able to find the archive.",
+	"portalname" : "This is the name you want for the cloned portal.  It is recommended that you keep this all one word since it will be the name of a directory.  If you must make it multiple words please use an underscore (_) between words instead of spaces.",
+	"activateportal" : "This will place the cloned portal in /etc/nodogsplash/htdocs.  Keep in mind that when you do this it will overwrite the current active portal.",
+	"striplinks" : "Select this if you want to strip all links from &lt;a&gt; tags from the cloned portal.",
+	"stripjs" : "Select this if you want to strip all inline JavaScript from the cloned portal.",
+	"stripcss" : "Select this if you want to strip all inline CSS from the cloned portal.",
+	"stripforms" : "Select this if you want to strip all form data from the cloned portal.",
+	"mac_collection" : "If the auto authentication request fails, and this option is checked, Portal Auth will gather all of the MAC addresses of the clients on the network so you can impersonate one of them.<br /><br />The reason this can't be done automatically is because the client interface must be brought down in order to change the MAC address."
+}
