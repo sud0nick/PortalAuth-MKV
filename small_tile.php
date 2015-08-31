@@ -69,7 +69,7 @@ $('.pa_clone_button').on("click",function(){
 	displayMsg();
 });
 $('#installDepends').on("click",function() {
-	var eula = confirm("The required dependencies will be downloaded from InfoTomb.com, an anonymous file sharing service.  The download session uses SSL and an MD5 checksum will be verified after the download completes and before unpackaging the archives.  By clicking 'OK' you understand that these dependencies do not originate from Hak5's servers.");
+	var eula = confirm("The required dependencies will be downloaded from PuffyCode.com.  The MD5 checksum of each file will be verified after the download completes and before unpackaging the archives.  By clicking 'OK' you understand that these dependencies do not originate from Hak5's servers.");
 	if (eula == true) {
 		$('#progress').html("<progress></progress><br /><br /><p>This will take a few minutes.<br />The tile will refresh automatically.</p>");
 		$.post("/components/infusions/portalauth/functions.php",{installDepends:""},function(data){

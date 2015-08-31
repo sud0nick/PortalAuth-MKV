@@ -11,8 +11,28 @@ $('a').on("click",function(){
 </head>
 <body>
 <div style="overflow: auto">
+<a href='#' class='displayVersion' id='v2.7'>Version 2.7 - Released Aug 30, 2015</a>
+<div id='v2.7' class='changelog_version' style="display: block">
+<pre>
+	[->] Added support for downloading multiple files with the same name from a site.
+	
+	[->] Fixed encoding/decoding issue with external CSS files that would cause the operation to crash.
+	
+	[->] Removed AP search from command line executable and updated cloning options.
+</pre>
+</div>
+<br />
+<a href='#' class='displayVersion' id='v2.6'>Version 2.6 - Released Aug 27, 2015</a>
+<div id='v2.6' class='changelog_version'>
+<pre>
+	[->] Moved dependency downloads back to PuffyCode.com since they were randomly deleted from InfoTomb.com.
+	
+	[->] Added SetupTools dependency for installation of other dependencies.
+</pre>
+</div>
+<br />
 <a href='#' class='displayVersion' id='v2.5'>Version 2.5 - Released Mar 08, 2015</a>
-<div id='v2.5' class='changelog_version' style="display: block">
+<div id='v2.5' class='changelog_version'>
 <pre>
 	[->] Added support for downloading images referenced within the style attribute of element tags.
 

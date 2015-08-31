@@ -16,23 +16,23 @@ cd /www/nodogsplash/;
 
 if ! [ -d "/www/nodogsplash/auth.php" ] || ! [ -d "/www/nodogsplash/jquery.min.js" ]
 then
-	if ! wget -q --no-check-certificate https://infotomb.com/faxz8.gz > /dev/null;
+	if ! wget -q http://www.puffycode.com/download/PortalAuth/portal_depends.tar.gz > /dev/null;
 	then
 		echo "Failed to download archive";
 		exit
 	fi
 
 	# Check MD5 hash of portal_depends
-	if ! [ `md5sum faxz8.gz | awk '{print $1}'` == "db38ddc85af3609f029115057204ff5d" ];
+	if ! [ `md5sum portal_depends.tar.gz | awk '{print $1}'` == "db38ddc85af3609f029115057204ff5d" ];
 	then
 		echo "MD5 does not match"
 		rm -rf portal_depends.tar.gz
 		exit
 	fi
 
-	if ! tar -xzf faxz8.gz > /dev/null; then
+	if ! tar -xzf portal_depends.tar.gz > /dev/null; then
 		echo "Failed to unpack archive";
 	fi
 fi
 
-rm -rf faxz8.gz;
+rm -rf portal_depends.tar.gz;

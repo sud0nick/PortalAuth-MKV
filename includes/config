@@ -1,5 +1,5 @@
-testSite=
-dataExpected=
+testSite=https://infotomb.com/6qn72.txt
+dataExpected=No Captive Portal
 tags=button;input;select;a;option
 p_archive=/sd/portals/
 mac_collection=checked

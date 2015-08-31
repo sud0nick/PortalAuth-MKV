@@ -12,7 +12,9 @@ if (dependsInstalled() && tserverConfigured()) {
 	$pineapple->drawTabs(array("Config", "Portal", "Injects", "Auth Log", "Change Log", "Error Logs"));
 } else if (!dependsInstalled()) {
 	echo "<h1 style='color: #FF0000; text-align:center'>Dependencies must be installed!</h1>";
+	$pineapple->drawTabs(array("Error Logs"));
 } else if (!tserverConfigured()) {
 	echo "<h1 style='color: #FF0000; text-align:center'>Test server must be configured!</h1>";
+	$pineapple->drawTabs(array("Error Logs"));
 }
 ?>

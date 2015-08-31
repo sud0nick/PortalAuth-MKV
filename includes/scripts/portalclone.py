@@ -42,7 +42,7 @@ def follow_redirects(r,s):
 
 def downloadFile(r,name):
 	with open(localNDS + "images/" + name, 'wb') as out_file:
-			for chunk in r.iter_content(2048):
+			for chunk in r.iter_content(4096):
 				out_file.write(chunk)
 	
 def parseCSS(_url):
@@ -60,6 +60,17 @@ def parseCSS(_url):
 	except:
 		pass
 	return urls
+	
+def checkFileName(orig):
+	filename, file_ext = os.path.splitext(orig)
+	path = localNDS + "images/%s%s" % (filename, file_ext)
+	fname = orig
+	uniq = 1
+	while os.path.exists(path):
+		fname = "%s_%d%s" % (filename, uniq, file_ext)
+		path = localNDS + "images/" + fname
+		uniq += 1
+	return fname
 
 # Check if the proper directories exist and create them if not
 for path in requiredPaths:
@@ -172,6 +183,12 @@ for img in soup.find_all(['img', 'link', 'embed']):
 	
 	# Parse the tag to get the file name
 	fname = str(img.get(tag)).split("/")[-1]
+	
+	# Strip out any undesired characters
+	pattern = re.compile('[^a-zA-Z0-9_.]+', re.UNICODE)
+	fname = pattern.sub('', fname)
+	fname = fname[:255]
+	
 	if fname == "":
 		continue
 	if fname.rpartition('.')[1] == "":
@@ -180,24 +197,20 @@ for img in soup.find_all(['img', 'link', 'embed']):
 		_key = "images/" + fname
 		css_urls[_key] = parseCSS(urlparse.urljoin(url, img.get(tag)))
 
-	# Strip out any undesired characters
-	pattern = re.compile('[^a-zA-Z0-9_.-]+', re.UNICODE)
-	fname = pattern.sub('', fname)
-	fname = fname[:255]
-
 	# Download the file
+	checkedName = checkFileName(fname)
 	r = s.get(urlparse.urljoin(url, img.get(tag)), stream=True, verify=False)
-	downloadFile(r, fname)
+	downloadFile(r, checkedName)
 	
 	# Change the image src to look for the image in $imagesdir
-	img[tag] = "$imagesdir/" + fname
-
+	img[tag] = "$imagesdir/" + checkedName
+	
 # Download any images found in the CSS file and change the link to $imagesdir
 # This occurs AFTER the CSS files have already been copied
 for css_file, urls in css_urls.iteritems():
 
 	# Open the CSS file and get the contents
-	fh = open(localNDS + css_file).read()
+	fh = open(localNDS + css_file).read().decode('utf-8')
 
 	# Iterate over the URLs associated with this CSS file
 	for _fileurl in urls:
@@ -206,15 +219,19 @@ for css_file, urls in css_urls.iteritems():
 		fname = _fileurl.split("/")[-1]
 
 		# Download the image from the web server
-		r = s.get(urlparse.urljoin(url, _fileurl), stream=True, verify=False)
-		downloadFile(r, fname)
+		checkedName = checkFileName(fname)
+		try:
+			r = s.get(urlparse.urljoin(url, _fileurl), stream=True, verify=False)
+			downloadFile(r, checkedName)
+		except:
+			pass
 		
 		# Change the link in the CSS file
-		fh = fh.replace(_fileurl, fname)
+		fh = fh.replace(_fileurl, checkedName)
 
 	# Write the contents back out to the file
 	fw = open(localNDS + css_file, 'w')
-	fw.write(fh)
+	fw.write(fh.encode('utf-8'))
 	fw.flush()
 	fw.close()
 
