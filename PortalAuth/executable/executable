@@ -1,0 +1,115 @@
+#!/usr/bin/python
+
+import argparse
+import os
+import subprocess
+import requests
+import logging
+
+logging.captureWarnings(True)
+
+parser = argparse.ArgumentParser(description='Automatically search and connect to an open access point.  Optionally, clone and authenticate with a captive portal.')
+# parser.add_argument('interface', action='store', help='Wireless interface to scan and connect')
+parser.add_argument('-c', '--clone', action='store', dest='portalname', help='Attempt to clone a portal if it exists', default='New_Portal')
+parser.add_argument('-a', '--authenticate', action='store_true', dest='auth', help='Attempt to authenticate with a portal if it exists', default=False)
+'''
+parser.add_argument('-b', '--blacklist', action='store', dest='blacklist', help='Path to file containing SSIDs to ignore in scan', default="", metavar="")
+parser.add_argument('-w', '--whitelist', action='store', dest='whitelist', help='Path to file containing SSIDs to accept in scan', default="", metavar="")
+'''
+parser.add_argument('-ijs', '--injectjs', action='store_true', dest='injectjs', help='Cloner Option: Inject JavaScript from Injection Set', default=False)
+parser.add_argument('-ihtml', '--injecthtml', action='store_true', dest='injecthtml', help='Cloner Option: Inject HTML from Injection Set', default=False)
+parser.add_argument('-icss', '--injectcss', action='store_true', dest='injectcss', help='Cloner Option: Inject CSS from Injection Set', default=False)
+parser.add_argument('-sjs', '--stripjs', action='store_true', dest='stripjs', help='Cloner Option: Strip JavaScript from cloned portal', default=False)
+parser.add_argument('-scss', '--stripcss', action='store_true', dest='stripcss', help='Cloner Option: Strip inline CSS from cloned portal', default=False)
+parser.add_argument('-sl', '--striplinks', action='store_true', dest='striplinks', help='Cloner Option: Strip links from cloned portal', default=False)
+parser.add_argument('-sf', '--stripforms', action='store_true', dest='stripforms', help='Cloner Option: Strip forms from cloned portal', default=False)
+parser.add_argument('-iset', '--injectionset', action='store', dest='injectionset', help='Cloner Option: Name of Injection Set to use when cloning', default='Default', metavar="")
+parser.add_argument('-act', '--activate', action='store_true', dest='activatePortal', help='Activate the captive portal after cloning', default=True)
+args = parser.parse_args();
+
+def callCmd(cmd):
+	with open(os.devnull, 'wb') as devnull:
+		subprocess.call(cmd, stdout=devnull, stderr=subprocess.STDOUT, shell=True)
+'''
+# Bring the interface up
+subprocess.call("ifconfig "+args.interface+" up", shell=True)
+
+# Scan for SSIDs with the interface
+SSIDs = subprocess.check_output("iw "+args.interface+" scan | grep SSID | awk '{ print $2 }'", shell=True)
+
+# Check if a blacklist or whitelist file exists
+# If both are present the program defaults to whitelist mode
+# Mode 0 = whitelist; Mode 1 = blacklist
+blacklist = []
+whitelist = []
+mode = 0
+if len(args.whitelist) > 0:
+	mode = 1
+	for line in open(args.whitelist).readlines():
+		whitelist.append(line.rstrip('\n'))
+elif len(args.blacklist) > 0:
+	mode = 2
+	for line in open(args.blacklist).readlines():
+		blacklist.append(line.rstrip('\n'))
+
+# Attempt to connect to each SSID assuming they are not in the blacklist.  The first open AP will accept the connection.
+for ssid in SSIDs.splitlines():
+	if "\\x00" in ssid:
+		continue
+	if mode == 1:
+		if not ssid in whitelist:
+			continue
+	elif mode == 2:
+		if ssid in blacklist:
+			continue
+
+	# Attempt to connect to the AP
+	callCmd("iw "+args.interface+" connect -w " + ssid)
+
+# Check if the interface is connected
+status = subprocess.check_output("iwconfig "+args.interface+" | grep ESSID | awk '{print $4}'", shell=True)
+essid = status.rstrip('\n').split(":")[1]
+if "off/any" in essid:
+	print "Not Connected"
+	exit()
+
+# If connected request an IP address
+callCmd("udhcpc -i "+args.interface)
+'''
+if args.portalname or args.auth:
+	# Import the settings from the PortalAuth config file
+	settings = {}
+	for line in open("/pineapple/components/infusions/portalauth/includes/config").readlines():
+		_line = line.rstrip('\n').split('=')
+		settings[_line[0]] = _line[1]
+
+	# Determine if a captive portal is present
+	response = requests.get(settings['testSite'], verify=False)
+	
+	if not response.text == settings['dataExpected']:
+		if args.portalname:
+			clone_options = []
+
+			if args.injectjs:
+				clone_options.append("injectjs")
+			if args.injectcss:
+				clone_options.append("injectcss")
+			if args.injecthtml:
+				clone_options.append("injecthtml")
+			if args.stripjs:
+				clone_options.append("stripjs")
+			if args.stripcss:
+				clone_options.append("stripcss")
+			if args.striplinks:
+				clone_options.append("striplinks")
+			if args.stripforms:
+				clone_options.append("stripforms")
+
+			cmd = "python /pineapple/components/infusions/portalauth/includes/scripts/portalclone.py " + args.portalname + " " + settings['p_archive'] + " '" + ";".join(clone_options) + "' " + settings['testSite'] + " " + args.injectionset
+			callCmd(cmd)
+			
+			if args.activatePortal:
+				cmd = "/pineapple/components/infusions/portalauth/includes/scripts/activateportal.sh " + settings['p_archive'] +  " " + args.portalname + " " + args.injectionset
+				callCmd(cmd)
+#		if args.auth:
+#			pass
