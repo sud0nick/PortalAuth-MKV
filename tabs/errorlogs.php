@@ -4,6 +4,7 @@ require_once(__ROOT__.'/functions.php');
 ?>
 <!DOCTYPE html>
 <head>
+<script src="/components/infusions/portalauth/includes/js/infusion.js" type="text/javascript"></script>
 <script>
 $('.retrieveLog').on("click",function(){
 	var log = $(this).html();

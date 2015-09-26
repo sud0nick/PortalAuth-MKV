@@ -5,6 +5,7 @@ global $rel_dir;
 ?>
 <html>
 <head>
+<script src="/components/infusions/portalauth/includes/js/infusion.js" type="text/javascript"></script>
 <script type="text/javascript">
 function updateConfigData() {
 	var updateSite=$('#testSite').val();
@@ -41,7 +42,7 @@ $('#uninstallDepends').on("click",function(){
 	}
 });
 $('#defaultTestSite').on('click',function(){
-	$('#testSite').val("https://infotomb.com/6qn72.txt");
+	$('#testSite').val("http://www.puffycode.com/cptest.html");
 	$('#dataExpected').val("No Captive Portal");
 });
 </script>
@@ -51,7 +52,7 @@ $('#defaultTestSite').on('click',function(){
 	<table class="pa_config_table">
 	<tr class="pa_config_row"><td>
 	<h2 class="pa_h2">Test Website:<help id='portalauth:testwebsite'></help></h2><input class="pa_config_field" type="text" id="testSite" value="<?echo $configs['testSite'];?>"/><br /><br />
-	<button id="defaultTestSite">Use InfoTomb Server</a>
+	<button id="defaultTestSite">Default Server</a>
 	</td></tr>
 	<tr class="pa_config_row"><td>
 	<h2 class="pa_h2">Expected Data:<help id='portalauth:expecteddata'></help></h2><input class="pa_config_field" type="text" id="dataExpected" value="<?echo $configs['dataExpected'];?>"/>

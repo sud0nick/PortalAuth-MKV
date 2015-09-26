@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -d "/usr/lib/python2.7/site-packages/bs4" ] && [ -d "/usr/lib/python2.7/site-packages/requests" ] && [ -d "/usr/lib/python2.7/site-packages/tinycss" ]
+if [ -e "/usr/lib/python2.7/site-packages/beautifulsoup4-4.4.0-py2.7.egg" ] && [ -e "/usr/lib/python2.7/site-packages/requests-2.5.1-py2.7.egg" ] && [ -e "/usr/lib/python2.7/site-packages/tinycss-0.3-py2.7.egg" ]
 then
 	echo "Installed";
 else

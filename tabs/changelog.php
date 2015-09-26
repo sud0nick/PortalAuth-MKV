@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
 <style>@import url('<?php echo $rel_dir; ?>/includes/css/infusion.css')</style>
+<script src="/components/infusions/portalauth/includes/js/infusion.js" type="text/javascript"></script>
 <script>
 $('a').on("click",function(){
 	$('div.changelog_version').slideUp("slow");
@@ -11,8 +12,21 @@ $('a').on("click",function(){
 </head>
 <body>
 <div style="overflow: auto">
+<a href='#' class='displayVersion' id='v2.8'>Version 2.8 - Released Sept 23, 2015</a>
+<div id='v2.8' class='changelog_version' style="display: block">
+<pre>
+	[->] Added Payload tab which includes the Portal Auth Shell Server (PASS), payload upload center, and a default payload for Windows and OS X.
+	
+	[->] Modified the auth log tab to auto refresh.
+	
+	[->] Moved the Test Website and depends back to PuffyCode.com.
+	
+	[->] Added the Payloader injection set for delivering payloads to victim machines.
+</pre>
+</div>
+<br />
 <a href='#' class='displayVersion' id='v2.7'>Version 2.7 - Released Aug 30, 2015</a>
-<div id='v2.7' class='changelog_version' style="display: block">
+<div id='v2.7' class='changelog_version'>
 <pre>
 	[->] Added support for downloading multiple files with the same name from a site.
 	

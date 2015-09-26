@@ -9,7 +9,7 @@ if (!$pineapple->online()) {
 }
 
 if (dependsInstalled() && tserverConfigured()) {
-	$pineapple->drawTabs(array("Config", "Portal", "Injects", "Auth Log", "Change Log", "Error Logs"));
+	$pineapple->drawTabs(array("Config", "Portal", "Injects", "Payload", "Auth Log", "Change Log", "Error Logs"));
 } else if (!dependsInstalled()) {
 	echo "<h1 style='color: #FF0000; text-align:center'>Dependencies must be installed!</h1>";
 	$pineapple->drawTabs(array("Error Logs"));

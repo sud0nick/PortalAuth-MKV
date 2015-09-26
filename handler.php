@@ -5,7 +5,7 @@
 #########################
 $name = 'Portal Auth';  #Name of tile
 $updatable = 'false';  #Should this tile auto-refresh
-$version = '2.6';
+$version = '2.8';
 
 #########################
 #     Handler Code      #

@@ -146,7 +146,7 @@ iframe {
 	box-shadow: 10px 10px 5px 0px rgba(11,11,11,0.9);
 }
 @media screen and (min-width: 610px) {
-	#msgBox,#macStealerBox,#tserverdiv {
+	#msgBox,#macStealerBox,#tserverdiv,#pa_dependsConfirmDiv {
 		top: 50%;
 		left: 50%;
 		width: 600px;
@@ -157,14 +157,19 @@ iframe {
 		z-index: 10;
 		display: none;
 	}
-	#tserverdiv {
+	#tserverdiv{
 		height: 490px;
 		max-height: 550px;
 		margin-top: -275px;
 	}
+	#pa_dependsConfirmDiv {
+		height: 400px;
+		max-height: 460px;
+		margin-top: -230px;
+	}
 }
 @media screen and (max-width: 609px) {
-	#msgBox,#macStealerBox,#tserverdiv {
+	#msgBox,#macStealerBox,#tserverdiv,#pa_dependsConfirmDiv {
 		top: 50%;
 		left: 0px;
 		width: 100%;
@@ -179,6 +184,11 @@ iframe {
 		height: auto;
 		max-height: 570px;
 		margin-top: -275px;
+	}
+	#pa_dependsConfirmDiv  {
+		height: auto;
+		max-height: 480px;
+		margin-top: -230px;
 	}
 }
 #overlay-back {

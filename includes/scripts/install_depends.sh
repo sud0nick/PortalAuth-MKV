@@ -63,31 +63,26 @@ then
         mkdir /sd/depends/;
 fi
 
-# Install the libraries
-cp -R beautifulsoup4-4.4.0 /sd/depends/bs4;
-cp -R kennethreitz-requests-d2d576b /sd/depends/requests;
-cp -R tinycss-0.3 /sd/depends/tinycss;
-cp -R setuptools-18.2 /sd/depends/setuptools;
-
-# Create symbolic links for the dependencies so they can be accessed by the default search path
-ln -s /sd/depends/bs4 /usr/lib/python2.7/site-packages/bs4;
-ln -s /sd/depends/requests /usr/lib/python2.7/site-packages/requests;
-ln -s /sd/depends/tinycss/ /usr/lib/python2.7/site-packages/tinycss;
+# Move site-packages to /sd/depends/
+if ! [ -d "/sd/depends/site-packages/" ]; then
+	mv /usr/lib/python2.7/site-packages /sd/depends/site-packages
+	ln -s /sd/depends/site-packages/ /usr/lib/python2.7/site-packages
+fi
 
 # Run the setup.py scripts
-cd /sd/depends/setuptools/;
+cd /sd/tmp/portalauth/setuptools-18.2/;
 python setup.py build > /dev/null;
 python setup.py install > /dev/null;
 
-cd /sd/depends/bs4/;
+cd /sd/tmp/portalauth/beautifulsoup4-4.4.0/;
 python setup.py build > /dev/null;
 python setup.py install > /dev/null;
 
-cd /sd/depends/requests/;
+cd /sd/tmp/portalauth/kennethreitz-requests-d2d576b/;
 python setup.py build > /dev/null;
 python setup.py install > /dev/null;
 
-cd /sd/depends/tinycss/;
+cd /sd/tmp/portalauth/tinycss-0.3/;
 python setup.py build > /dev/null;
 python setup.py install > /dev/null;
 

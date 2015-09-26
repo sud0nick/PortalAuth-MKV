@@ -6,12 +6,9 @@ global $rel_dir;
 <!DOCTYPE html>
 <html>
 <head>
+<script src="/components/infusions/portalauth/includes/js/infusion.js" type="text/javascript"></script>
 <script>
-$('#refreshAuthLog').on('click',function(){
-	$.post("/components/infusions/portalauth/functions.php",{refreshAuthLog:""},function(data){
-		$('#authlog').html(data);
-	});
-});
+pa_auth_log_interval = setInterval(function(){pa_refreshAuthLog();},1000);
 </script>
 </head>
 <body>
@@ -24,8 +21,6 @@ $('#refreshAuthLog').on('click',function(){
 </td></tr><tr><td align="left" colspan="2">
 <textarea id="authlog" readonly><? echo file_get_contents('/www/nodogsplash/auth.log'); ?></textarea>
 </td></tr>
-<tr><td align="center">
-<button class="pa_button" id="refreshAuthLog">Refresh Log</button>
 </table>
 
 </div>

@@ -7,6 +7,7 @@ global $rel_dir;
 <html>
 <head>
 <script src="/components/infusions/portalauth/includes/scripts/jquery.form.js" type="text/javascript"></script>
+<script src="/components/infusions/portalauth/includes/js/infusion.js" type="text/javascript"></script>
 <script>
 document.getElementById("pa_token").value = _csrfToken;
 $(document).ready(function(){
@@ -327,7 +328,7 @@ function refreshAvailableInjectionSets() {
 	<tr><td align="left" colspan="2">
 	<h2 class="pa_h2">InjectJS<help id='portalauth:injectjs'></help></h2>
 	</td></tr><tr><td align="left" colspan="2">
-	<textarea id="injectJS"></textarea>
+	<textarea id="injectJS" wrap="off" spellcheck='false'></textarea>
 	</td></tr>
 	<tr><td align="left" valign="top">
 	<h3><a href="#" id="restoreInjectJS" fileName="injectjs" ta="injectJS">Restore InjectJS</a> | <a href="#" id="backupInjectJS" fileName="injectjs" ta="injectJS">Back up InjectJS</a></h3>
@@ -340,7 +341,7 @@ function refreshAvailableInjectionSets() {
 	<tr><td align="left" colspan="2">
 	<h2 class="pa_h2">InjectCSS<help id='portalauth:injectcss'></help></h2>
 	</td></tr><tr><td align="left" colspan="2">
-	<textarea id="injectCSS"></textarea>
+	<textarea id="injectCSS" wrap="off" spellcheck='false'></textarea>
 	</td></tr>
 	<tr><td align="left" valign="top">
 	<h3><a href="#" id="restoreInjectCSS" fileName="injectcss" ta="injectCSS">Restore InjectCSS</a> | <a href="#" id="backupInjectCSS" fileName="injectcss" ta="injectCSS">Back up InjectCSS</a></h3>
@@ -353,7 +354,7 @@ function refreshAvailableInjectionSets() {
 	<tr><td align="left" colspan="2">
 	<h2 class="pa_h2">InjectHTML<help id='portalauth:injecthtml'></help></h2>
 	</td></tr><tr><td align="left" colspan="2">
-	<textarea id="injectHTML"></textarea>
+	<textarea id="injectHTML" wrap="off" spellcheck='false'></textarea>
 	</td></tr><tr><td align="left" valign="top">
 	<h3><a href="#" id="restoreInjectHTML" fileName="injecthtml" ta="injectHTML">Restore InjectHTML</a> | <a href="#" id="backupInjectHTML" fileName="injecthtml" ta="injectHTML">Back up InjectHTML</a></h3>
 	</td><td align="right">
@@ -365,13 +366,14 @@ function refreshAvailableInjectionSets() {
 	<tr><td align="left" colspan="2">
 	<h2 class="pa_h2">auth.php<help id='portalauth:auth.php'></help></h2>
 	</td></tr><tr><td align="left" colspan="2">
-	<textarea id="authPHP"></textarea>
+	<textarea id="authPHP" wrap="off" spellcheck='false'></textarea>
 	</td></tr><tr><td align="left" valign="top">
 	<h3><a href="#" id="restoreAuthPHP" fileName="authphp" ta="authPHP">Restore auth.php</a> | <a href="#" id="backupAuthPHP" fileName="authphp" ta="authPHP">Back up auth.php</a> | <a href="#" id="activateAuthPHP">Activate Now</a></h3>
 	</td><td align="right">
 	<button class="pa_button save_auth_php" id="saveAuthPHP" ta="authPHP">Save auth.php</button>
 	</td></tr>
 	</table>
+	<br />
 </div>
 </div>
 

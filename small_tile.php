@@ -12,6 +12,7 @@ if (!$pineapple->online()) {
 <html>
 <head>
 <style>@import url('<?php echo $rel_dir; ?>/includes/css/infusion.css')</style>
+<script src="/components/infusions/portalauth/includes/js/infusion.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 var portalStatus;
@@ -68,17 +69,18 @@ $('.pa_clone_button').on("click",function(){
 	});
 	displayMsg();
 });
-$('#installDepends').on("click",function() {
-	var eula = confirm("The required dependencies will be downloaded from PuffyCode.com.  The MD5 checksum of each file will be verified after the download completes and before unpackaging the archives.  By clicking 'OK' you understand that these dependencies do not originate from Hak5's servers.");
-	if (eula == true) {
-		$('#progress').html("<progress></progress><br /><br /><p>This will take a few minutes.<br />The tile will refresh automatically.</p>");
-		$.post("/components/infusions/portalauth/functions.php",{installDepends:""},function(data){
-			if (data != true) {
-				alert("Failed to install dependencies.  Please check the error log for details.");
-			}
-			refresh_small("portalauth");
-		});
-	}
+$('#pa_openDependsConfirm').on("click",function(){
+	$('#pa_dependsConfirmDiv,#overlay-back').fadeIn('slow');
+});
+$('#pa_confirmInstallDepends').on('click',function(){
+	$('#pa_dependsConfirmDiv,#overlay-back').fadeOut('slow');
+	$('#progress').html("<progress></progress><br /><br /><p>This will take a few minutes.<br />The tile will refresh automatically.</p>");
+	$.post("/components/infusions/portalauth/functions.php",{installDepends:""},function(data){
+		if (data != true) {
+			alert("Failed to install dependencies.  Please check the error log for details.");
+		}
+		refresh_small("portalauth");
+	});
 });
 $('#configurePA').on("click",function(){
 	$('#config_progress').html("<progress></progress><br /><br />The tile will refresh automatically.</p>");
@@ -151,7 +153,7 @@ $('#openTServerConfig').on("click",function(){
 });
 $('#defaultSite').on("click",function(){
 	if ($(this).is(":checked")) {
-		$('#testSite').val("https://infotomb.com/6qn72.txt");
+		$('#testSite').val("http://www.puffycode.com/cptest.html");
 		$('#dataExpected').val("No Captive Portal");
 	} else {
 		$('#testSite').val("");
@@ -179,7 +181,7 @@ function displayMACStealer(){
 	});
 }
 $('#overlay-back').on("click",function(){
-		$("#msgBox,#macStealerBox,#tserverdiv,#overlay-back").fadeOut("slow");
+		$("#msgBox,#macStealerBox,#tserverdiv,#pa_dependsConfirmDiv,#overlay-back").fadeOut("slow");
 });
 </script>
 </head>
@@ -188,14 +190,11 @@ $('#overlay-back').on("click",function(){
 <?php
 if (!dependsInstalled()) {
 ?>
-	<span id="progress"><a href="#" style="font-size: 18px;" id="installDepends">Install Dependencies</a></span>
+	<span id="progress"><a href="#" style="font-size: 18px;" id="pa_openDependsConfirm">Install Dependencies</a></span>
 <?php
 }
-if (!isConfigured()) {
-?>
-	<br />
-	<span id="config_progress"><a href="#" style="font-size: 18px;" id="configurePA">Get jQuery and auth.php</a></span>
-<?php
+if (!jQueryExists()) {
+	alert("Failed to copy jQuery!  Please place a copy of jquery.min.js in your /www/nodogsplash/ directory!");
 }
 if (!tserverConfigured()) {
 ?>
@@ -203,7 +202,7 @@ if (!tserverConfigured()) {
 	<a href="#" style="font-size: 18px;" id="openTServerConfig">Configure test server</a>
 <?php
 }
-if (dependsInstalled() && isConfigured() && tserverConfigured()) {
+if (dependsInstalled() && jQueryExists() && tserverConfigured()) {
 ?>
 <div class="pa_top">
 	<div style="text-align: right">
@@ -271,23 +270,37 @@ if (dependsInstalled() && isConfigured() && tserverConfigured()) {
 
 <div id="macStealerBox" class="main" style="text-align:center">
 </div>
+
 <div id="tserverdiv" class="main">
-	<h3 style="padding: 5px 10px 5px 10px;">In order to detect captive portals a request needs to be sent out to a server and the data retrieved must be equal to the data expected.  You may set this up with your own server or use InfoTomb.  Please note that every check for a captive portal will send a request to the test server.</h3>
+	<h3 style="padding: 5px 10px 5px 10px;">In order to detect captive portals a request needs to be sent out to a server and the data retrieved must be equal to the data expected.  You may set this up with your own server or use sud0nick's.  Please note that every check for a captive portal will send a request to the test server.  These options can be changed at any time from the Config menu.</h3>
 	<div class="pa_config_div">
 		<table class="pa_config_table">
 		<tr class="pa_config_row"><td>
-		<h2 class="pa_h2">Test Website:<help id='portalauth:testwebsite'></help></h2><input class="pa_config_field" type="text" id="testSite" value=""/>
+			<h2 class="pa_h2">Test Website:<help id='portalauth:testwebsite'></help></h2><input class="pa_config_field" type="text" id="testSite" value=""/>
 		</td></tr>
 		<tr class="pa_config_row"><td>
-		<h2 class="pa_h2">Expected Data:<help id='portalauth:expecteddata'></help></h2><input class="pa_config_field" type="text" id="dataExpected" value=""/>
+			<h2 class="pa_h2">Expected Data:<help id='portalauth:expecteddata'></help></h2><input class="pa_config_field" type="text" id="dataExpected" value=""/>
 		</td></tr>
 		<tr class="pa_config_row"><td>
-		<label><input type="checkbox" id="defaultSite">Use anonymous InfoTomb server</label>
+			<label><input type="checkbox" id="defaultSite">Use sud0nick's server</label>
 		</td></tr>
 		<tr class="pa_config_row"><td>
-		<button class="pa_button" id="saveTServerConfig">Save</button>
+			<button class="pa_button" id="saveTServerConfig">Save</button>
 		</td></tr>
-		<table>
+		</table>
+	</div>
+</div>
+
+<div id="pa_dependsConfirmDiv" class="main">
+	<br />
+	<h3 style="padding: 5px 10px 5px 10px;">The required dependencies will be downloaded from PuffyCode.com.  The MD5 checksum of each file will be verified after the download completes and before unpackaging the archives.  By clicking 'Install' you understand that these dependencies do not originate from Hak5's servers.</h3>
+	<h3 style="padding: 5px 10px 5px 10px;">Due to the minimal storage capacity on the Pineapple the dependencies must be installed on the SD card.  To do this the <span style="color: #00FF00">/usr/lib/python2.7/site-packages/</span> directory will be moved to <span style="color:#00FF00">/sd/depends/</span> and a symbolic link will be created for it if it hasn't already been done.</h3>
+	<div class="pa_config_div">
+		<table class="pa_config_table">
+		<tr class="pa_config_row"><td style="padding-top: 20px">
+			<button class="pa_button" id="pa_confirmInstallDepends">Install</button>
+		</td></tr>
+		</table>
 	</div>
 </div>
 </body>

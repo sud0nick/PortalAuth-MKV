@@ -10,10 +10,22 @@ define('__INJECTJS__', __INJECTS__ . $_POST['module'] . "/injectJS.txt");
 define('__INJECTCSS__', __INJECTS__ . $_POST['module'] . "/injectCSS.txt");
 define('__INJECTHTML__', __INJECTS__ . $_POST['module'] . "/injectHTML.txt");
 define('__AUTHPHP__', __INJECTS__ . $_POST['module'] . "/auth.php");
+define('__PASSSRV__', __INCLUDES__ . "pass/pass.py");
 define('__JSBAK__', __INJECTS__ . $_POST['module'] . "/backups/injectJS.txt");
 define('__HTMLBAK__', __INJECTS__ . $_POST['module'] . "/backups/injectHTML.txt");
 define('__AUTHBAK__', __INJECTS__ . $_POST['module'] . "/backups/auth.php");
 define('__CSSBAK__', __INJECTS__ . $_POST['module'] . "/backups/injectCSS.txt");
+define('__PASSBAK__', __INCLUDES__ . "pass/Backups/pass.py");
+define('__NETCLIENTBAK__', __INCLUDES__ . "pass/Backups/NetworkClient.py");
+define('__PASSLOG__', __INCLUDES__ . "pass/pass.log");
+define('__TARGETLOG__', __INCLUDES__ . "pass/targets.log");
+define('__DOWNLOAD__', "/www/download/");
+define('__WINDL__', __DOWNLOAD__ . "windows/");
+define('__OSXDL__', __DOWNLOAD__ . "osx/");
+define('__ANDROIDDL__', __DOWNLOAD__ . "android/");
+define('__IOSDL__', __DOWNLOAD__ . "ios/");
+define('__COMPILEWIN__', __INCLUDES__ . "pass/NetCli_Win.zip");
+define('__COMPILEOSX__', __INCLUDES__ . "pass/NetCli_OSX.zip");
 
 $configs = array();
 loadConfigData($configs);
@@ -46,6 +58,10 @@ if (isset($_POST['updateStatus'])) {
 	echo saveClonerFile(__AUTHPHP__, $_POST['saveAuthPHP']);
 } else if (isset($_POST['saveInjectCSS'])) {
 	echo saveClonerFile(__INJECTCSS__, $_POST['saveInjectCSS']);
+} else if (isset($_POST['save_pa_pass'])) {
+	echo saveClonerFile(__PASSSRV__, $_POST['save_pa_pass']);
+} else if (isset($_POST['pa_save_target_log'])) {
+	echo saveClonerFile(__TARGETLOG__, $_POST['pa_save_target_log']);
 } else if (isset($_POST['checkPortalName'])) {
 	echo clonedPortalExists($_POST['checkPortalName']);
 } else if (isset($_POST['clonePortal'])) {
@@ -74,6 +90,10 @@ if (isset($_POST['updateStatus'])) {
 			saveClonerFile(__INJECTCSS__, $_POST['backupData']);
 			echo backupFile(__INJECTCSS__, __CSSBAK__);
 			break;
+		case "pa_pass":
+			saveClonerFile(__PASSSRV__, $_POST['backupData']);
+			echo backupFile(__PASSSRV__, __PASSBAK__);
+			break;
 		default:
 			break;
 	}
@@ -91,6 +111,9 @@ if (isset($_POST['updateStatus'])) {
 			break;
 		case "injectcss":
 			echo restoreFile(__INJECTCSS__, __CSSBAK__);
+			break;
+		case "pa_pass":
+			echo restoreFile(__PASSSRV__, __PASSBAK__);
 			break;
 		default:
 			break;
@@ -110,6 +133,10 @@ if (isset($_POST['updateStatus'])) {
 	echo deleteLog($_POST['deleteLog']);
 } else if (isset($_POST['refreshAuthLog'])) {
 	echo refreshAuthLog();
+} else if (isset($_POST['refreshActivityLog'])) {
+	echo refreshActivityLog();
+} else if (isset($_POST['refreshTargetLog'])) {
+	echo refreshTargetLog();
 } else if (isset($_POST['createInjectionSet'])) {
 	echo createInjectionSet($_POST['createInjectionSet']);
 } else if (isset($_POST['getInjectionSets'])) {
@@ -130,6 +157,34 @@ if (isset($_POST['updateStatus'])) {
 	echo downloadExternalInjectionSet($_POST['downloadExternalInjectionSet']);
 } else if (isset($_POST['fetchAvailableInjectionSets'])) {
 	echo fetchAvailableInjectionSets();
+} else if(isset($_POST['clearActivityLog'])) {
+	echo clearActivityLog();
+} else if (isset($_POST['clearTargetLog'])) {
+	echo clearTargetLog();
+} else if (isset($_POST['getPID'])) {
+	echo getPID();
+} else if (isset($_POST['startServer'])) {
+	echo startServer();
+} else if (isset($_POST['stopServer'])) {
+	echo stopServer();
+} else if (isset($_FILES['importWindowsPayload'])) {
+	echo importPayload($_FILES['importWindowsPayload'], __WINDL__);
+} else if (isset($_FILES['importOSXPayload'])) {
+	echo importPayload($_FILES['importOSXPayload'], __OSXDL__);
+} else if (isset($_FILES['importAndroidPayload'])) {
+	echo importPayload($_FILES['importAndroidPayload'], __ANDROIDDL__);
+} else if (isset($_FILES['importiOSPayload'])) {
+	echo importPayload($_FILES['importiOSPayload'], __IOSDL__);
+} else if (isset($_POST['cfgUploadLimit'])) {
+	echo cfgUploadLimit();
+} else if (isset($_GET['dlActivityLog'])) {
+	downloadFile(__PASSLOG__);
+} else if (isset($_GET['dlTargetLog'])) {
+	downloadFile(__TARGETLOG__);
+} else if (isset($_GET['dlCompileScriptWin'])) {
+	downloadFile(__COMPILEWIN__);
+} else if (isset($_GET['dlCompileScriptOSX'])) {
+	downloadFile(__COMPILEOSX__);
 }
 
 function portalExists() {
@@ -198,6 +253,40 @@ function activateAuthPHP($injectSet) {
 	return false;
 }
 
+function getPID() {
+	$data = array();
+	$ret = exec("pgrep -lf pass.py", $data);
+	$output = explode(" ", $data[0]);
+	if ($output[1] == "python") {
+		return $output[0];
+	}
+	return false;
+}
+
+function startServer() {
+	$ret = exec("python " . __PASSSRV__ . " > /dev/null 2>&1 &");
+	if (getPID() != false) {
+		return true;
+	}
+	return false;
+}
+
+function stopServer() {
+	$pid = getPID();
+	if ($pid != false) {
+		$ret = exec("kill " . $pid);
+		if (getPID() != false) {
+			return false;
+		}
+	}
+	$dt = array();
+	exec("date +'%m/%d/%Y %T'", $dt);
+	$fh = fopen(__PASSLOG__, "a");
+	fwrite($fh, "[!] " . $dt[0] . " - Server stopped\n");
+	fclose($fh);
+	return true;
+}
+
 function scanNetwork() {
 	$data = array();
 	$res = exec(__SCRIPTS__ . "scan.sh", $data);
@@ -242,20 +331,13 @@ function tserverConfigured() {
 	return true;
 }
 
-function isConfigured() {
-	if (file_exists("/www/nodogsplash/auth.php") && file_exists("/www/nodogsplash/jquery.min.js")) {
+function jQueryExists() {
+	if (file_exists("/www/nodogsplash/jquery.min.js")) {
 		return true;
 	}
-	return false;
-}
-
-function configurePA() {
-	$data = array();
-	$res = exec(__SCRIPTS__ . "config.sh 2>&1", $data);
-	if ($res == "") {
+	if (copy(__SCRIPTS__ . "jquery.min.js", "/www/nodogsplash/jquery.min.js")) {
 		return true;
 	}
-	logError("configure_error", implode("\r\n",$data));
 	return false;
 }
 
@@ -383,11 +465,15 @@ function exportInjectionSet($setName) {
 
 function downloadInjectionSet($setName) {
     $file = "downloads/".$setName.".tar.gz";
-    if (file_exists($file)) {
+    downloadFile($file);
+}
+
+function downloadFile($file) {
+	if (file_exists($file)) {
         header_remove();
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename='.$setName.'.tar.gz');
+        header('Content-Disposition: attachment; filename='. basename($file));
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Pragma: public');
@@ -422,9 +508,7 @@ function downloadExternalInjectionSet($url) {
 
 function importInjectionSet($file) {
 	$data = array();
-	$file['name'] = str_replace(array( '(', ')' ), '', $file['name']);
-	$uploadfile = __INJECTS__ . basename($file['name']);
-	if (move_uploaded_file($file['tmp_name'], $uploadfile)) {
+	if (importPayload($file, __INJECTS__)) {
 		exec(__SCRIPTS__ . "unpackInjectionSet.sh " . $file['name'], $data);
 		return "Import Successful!";
 	}
@@ -448,6 +532,55 @@ function getInjectionFile($fileName, $setName) {
 function deleteInjectionSet($setName) {
 	rrmdir(__INJECTS__ . $setName);
 	return true;
+}
+
+/* PAYLOAD UPLOAD FUNCTION */
+function importPayload($file, $dir) {	
+	// Check if the directory exists, if not then create it
+	if (!file_exists($dir)) {
+		if (!mkdir($dir, 0755)) {
+			logError("payload_upload_error", "The following directory does not exist and could not be created\n" . $dir);
+			return false;
+		}
+	}
+	$file['name'] = str_replace(array( '(', ')' ), '', $file['name']);
+	$uploadfile = $dir . basename($file['name']);
+	if (move_uploaded_file($file['tmp_name'], $uploadfile)) {
+		return true;
+	}
+	logError("payload_upload_error", "The destination directory exists but for an unknown reason the file failed to upload.  This is most likely because you are still using the default upload limit in nginx.conf and php.ini.  Go to the Payload tab -> NetClient tab and click on the link 'Configure Upload Limit'.");
+	return false;
+}
+
+function cfgUploadLimit() {
+	$data = array();
+	$res = exec("python " . __SCRIPTS__ . "cfgUploadLimit.py > /dev/null 2>&1 &", $data);
+	if ($res != "") {
+		logError("cfg_upload_limit_error", $data);
+		return false;
+	}
+	return true;
+}
+
+/* ACTIVITY AND TARGET LOG FUNCTIONS */
+function clearActivityLog() {
+	$fh = fopen(__INCLUDES__ . "pass/pass.log", "w+");
+	fclose($fh);
+	return refreshActivityLog();
+}
+
+function clearTargetLog() {
+	$fh = fopen(__INCLUDES__ . "pass/targets.log", "w+");
+	fclose($fh);
+	return refreshTargetLog();
+}
+
+function refreshActivityLog() {
+	return file_get_contents(__INCLUDES__ . 'pass/pass.log');
+}
+
+function refreshTargetLog() {
+	return file_get_contents(__INCLUDES__ . 'pass/targets.log');
 }
 
 /* ERROR LOG FUNCTIONS */

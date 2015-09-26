@@ -6,6 +6,7 @@ $noportal = "<h1 style='color: #34D134;text-align:center;'>No Captive Portal Det
 ?>
 <html>
 <head>
+<script src="/components/infusions/portalauth/includes/js/infusion.js" type="text/javascript"></script>
 <script type="text/javascript">
 window.onload = setTimeout(requestUpdate, 10);
 function requestUpdate() {
