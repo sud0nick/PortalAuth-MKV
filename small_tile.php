@@ -194,7 +194,7 @@ if (!dependsInstalled()) {
 <?php
 }
 if (!jQueryExists()) {
-	alert("Failed to copy jQuery!  Please place a copy of jquery.min.js in your /www/nodogsplash/ directory!");
+	echo "<script>alert('Failed to copy jQuery!  Please place a copy of jquery.min.js in your /www/nodogsplash/ directory!');</script>";
 }
 if (!tserverConfigured()) {
 ?>

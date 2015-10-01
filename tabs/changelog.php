@@ -12,8 +12,15 @@ $('a').on("click",function(){
 </head>
 <body>
 <div style="overflow: auto">
+<a href='#' class='displayVersion' id='v2.9'>Version 2.9 - Released Oct 1, 2015</a>
+<div id='v2.9' class='changelog_version' style="display: block">
+<pre>
+	[->] Fixed bugs that prevented depends from being installed on newly flashed devices.
+</pre>
+</div>
+<br />
 <a href='#' class='displayVersion' id='v2.8'>Version 2.8 - Released Sept 23, 2015</a>
-<div id='v2.8' class='changelog_version' style="display: block">
+<div id='v2.8' class='changelog_version'>
 <pre>
 	[->] Added Payload tab which includes the Portal Auth Shell Server (PASS), payload upload center, and a default payload for Windows and OS X.
 	

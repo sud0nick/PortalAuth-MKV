@@ -332,8 +332,14 @@ function tserverConfigured() {
 }
 
 function jQueryExists() {
+	// Check if file exists already
 	if (file_exists("/www/nodogsplash/jquery.min.js")) {
 		return true;
+	}
+	
+	// Check if the /www/nodogsplash/ directory exists
+	if (!is_dir("/www/nodogsplash")) {
+		mkdir("/www/nodogsplash/", 0755, true);
 	}
 	if (copy(__SCRIPTS__ . "jquery.min.js", "/www/nodogsplash/jquery.min.js")) {
 		return true;
@@ -538,7 +544,7 @@ function deleteInjectionSet($setName) {
 function importPayload($file, $dir) {	
 	// Check if the directory exists, if not then create it
 	if (!file_exists($dir)) {
-		if (!mkdir($dir, 0755)) {
+		if (!mkdir($dir, 0755, true)) {
 			logError("payload_upload_error", "The following directory does not exist and could not be created\n" . $dir);
 			return false;
 		}

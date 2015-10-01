@@ -14,6 +14,9 @@ fi
 if ! [ -d "/sd/tmp/" ]; then
 	mkdir /sd/tmp
 fi
+
+# Remove any old copies of PortalAuth tmp files from previous attempts
+rm -rf /sd/tmp/portalauth
 mkdir /sd/tmp/portalauth;
 cd /sd/tmp/portalauth;
 
@@ -65,6 +68,14 @@ fi
 
 # Move site-packages to /sd/depends/
 if ! [ -d "/sd/depends/site-packages/" ]; then
+	if ! [ -d "/usr/lib/python2.7/site-packages/" ]; then
+
+		# This is here in case a symbolic link still exists
+		# from a previous installation
+		rm -rf "/usr/lib/python2.7/site-packages/";
+		mkdir "/usr/lib/python2.7/site-packages/";
+	fi
+
 	mv /usr/lib/python2.7/site-packages /sd/depends/site-packages
 	ln -s /sd/depends/site-packages/ /usr/lib/python2.7/site-packages
 fi
